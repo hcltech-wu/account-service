@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration status="WARN">
+    <Appenders>
+        <File name="FileLogger" fileName="/var/log/account-service/application.log">
+            <PatternLayout pattern="%d{yyyy-mm-dd HH:mm:ss}  [%X{correlationId}] [%X{sessionId}] [%X{clientId}] %-5p %c{1} - %m%n"/>
+        </File>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-mm-dd HH:mm:ss}  [%X{correlationId}] [%X{sessionId}] [%X{clientId}] %-5p %c{1} - %m%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="FileLogger"/>
+        </Root>
+    </Loggers>
+</Configuration>
