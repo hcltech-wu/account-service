@@ -18,23 +18,24 @@ import static com.accountservice.common.AppConstants.*;
 public class AccountController {
     private static final Logger logger = LogManager.getLogger(AccountController.class);
     @Autowired
-    private AccountRepo getRepo;
+    private AccountRepo accRepo;
 
     @GetMapping(value = "/getAllAccounts",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Account>> getAllAcc(
+    public ResponseEntity<List<Account>> getAllAccounts(
             @RequestHeader(value = X_CORRELATION_ID, required = false) String correlationId,
             @RequestHeader(value = X_SESSION_ID, required = false) String sessionId,
             @RequestHeader(value = X_CLIENT_ID, required = false) String clientId
     ){
         logger.info("Received request to fetch all accounts");
+        logger.info("SessionId {} and ClientId {}", sessionId, clientId);
         try{
-            List<Account> accounts = getRepo.findAll();
+            List<Account> accounts = accRepo.findAll();
             if(accounts.isEmpty()){
                 logger.warn("No accounts found in Database");
                 return ResponseEntity.noContent().build();
             }
-            logger.info("Successfully retrived {} accounts", accounts.size());
+            logger.info("Successfully retrieved {} accounts", accounts.size());
             return ResponseEntity.ok(accounts);
         }
         catch(Exception e){
@@ -43,7 +44,7 @@ public class AccountController {
         }
     }
 
-    @PostMapping(value = "/addAcc",
+    @PostMapping(value = "/addAccount",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addAccount(@RequestBody Account acc,
@@ -51,13 +52,14 @@ public class AccountController {
         @RequestHeader(value = X_SESSION_ID, required = false) String sessionId,
         @RequestHeader(value = X_CLIENT_ID, required = false) String clientId
     ){
-        logger.info("Recieved request to create account for: {}", acc.getUsername());
+        logger.info("Received request to create account for: {}", acc.getUsername());
+        logger.info("SessionId {} and ClientId {}", sessionId, clientId);
         if(acc.getUsername() == null || acc.getUsername().isBlank()){
             logger.warn("Account creation failed: user name is empty");
             return ResponseEntity.badRequest().body("username can't be empty");
         }
         try {
-            getRepo.save(acc);
+            accRepo.save(acc);
             logger.info("Account saved successfully with account id: {}", acc.getId());
             return ResponseEntity.ok("Account created");
         }
@@ -67,7 +69,7 @@ public class AccountController {
         }
     }
 
-    @GetMapping(value = "/getAcc",
+    @GetMapping(value = "/getAccount",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Account> getAccWithId(
             @RequestParam String id,
@@ -76,7 +78,8 @@ public class AccountController {
             @RequestHeader(value = X_CLIENT_ID, required = false) String clientId
     ){
         logger.info("Fetching account with Id: {}", id);
-        return getRepo.findById(id)
+        logger.info("SessionId {} and ClientId {}", sessionId, clientId);
+        return accRepo.findById(id)
                 .map(account -> {logger.info("Account Found for Id: {}", id);
                         return ResponseEntity.ok(account);
                 }).orElseGet(()-> {logger.warn("No account found with Id: {}", id);
