@@ -1,5 +1,9 @@
 package com.accountservice.common;
 
+
+/**
+ * Application-wide Constants used for headers and identifiers.
+ */
 public class AppConstants {
     public static final String X_CORRELATION_ID = "X_CORRELATION_ID";
     public static final String X_SESSION_ID = "X_SESSION_ID";

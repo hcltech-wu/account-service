@@ -13,6 +13,10 @@ import java.util.List;
 
 import static com.accountservice.common.AppConstants.*;
 
+/**
+ * REST controller for managing account operations.
+ */
+
 @RestController
 @RequestMapping("/accounts")
 public class AccountController {
@@ -20,6 +24,13 @@ public class AccountController {
     @Autowired
     private AccountRepo accRepo;
 
+    /**
+     * Retrieve all the accounts from Database.
+     * @param correlationId is for correlation id
+     * @param sessionId is for session id
+     * @param clientId is for client id
+     * @return ResponseEntity containing the list of accounts
+     */
     @GetMapping(value = "/getAllAccounts",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Account>> getAllAccounts(
@@ -28,7 +39,7 @@ public class AccountController {
             @RequestHeader(value = X_CLIENT_ID, required = false) String clientId
     ){
         logger.info("Received request to fetch all accounts");
-        logger.info("SessionId {} and ClientId {}", sessionId, clientId);
+        logger.info("SessionId {} and ClientId {} and correlationId {}", sessionId, clientId, correlationId);
         try{
             List<Account> accounts = accRepo.findAll();
             if(accounts.isEmpty()){
@@ -44,6 +55,14 @@ public class AccountController {
         }
     }
 
+    /**
+     * Creates new account.
+     * @param acc the account details to be created.
+     * @param correlationId is for correlation id
+     * @param sessionId is for session id
+     * @param clientId is for client id
+     * @return the status of an account creation.
+     */
     @PostMapping(value = "/addAccount",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -53,7 +72,7 @@ public class AccountController {
         @RequestHeader(value = X_CLIENT_ID, required = false) String clientId
     ){
         logger.info("Received request to create account for: {}", acc.getUsername());
-        logger.info("SessionId {} and ClientId {}", sessionId, clientId);
+        logger.info("SessionId {} and ClientId {} and correlationId {}", sessionId, clientId, correlationId);
         if(acc.getUsername() == null || acc.getUsername().isBlank()){
             logger.warn("Account creation failed: user name is empty");
             return ResponseEntity.badRequest().body("username can't be empty");
@@ -69,6 +88,14 @@ public class AccountController {
         }
     }
 
+    /**
+     * Retrieves a specific account by its id.
+     * @param id is the id of the account.
+     * @param correlationId is for correlation id
+     * @param sessionId is for session id
+     * @param clientId is for client id
+     * @return an account which has the specified id.
+     */
     @GetMapping(value = "/getAccount",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Account> getAccWithId(
@@ -78,7 +105,7 @@ public class AccountController {
             @RequestHeader(value = X_CLIENT_ID, required = false) String clientId
     ){
         logger.info("Fetching account with Id: {}", id);
-        logger.info("SessionId {} and ClientId {}", sessionId, clientId);
+        logger.info("SessionId {} and ClientId {} and correlationId {}", sessionId, clientId, correlationId);
         return accRepo.findById(id)
                 .map(account -> {logger.info("Account Found for Id: {}", id);
                         return ResponseEntity.ok(account);

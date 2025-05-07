@@ -8,6 +8,10 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.UUID;
 
+/**
+ * A servlet filter that enriches the logging context with request-specific metadata.
+ * Adds correlation id, session id,and client id to Log4j ThreadContext for tracing logs.
+ */
 @Component
 public class LoggerContextFilter implements Filter {
     @Override

@@ -5,6 +5,10 @@ import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCusto
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Configuration class for customizing Micrometer metrics.
+ * Adds common tags to all metrics for consistent labeling.
+ */
 @Configuration
 public class MetricsConfig {
     @Bean
